@@ -18,7 +18,16 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "src/lib/supabase/database.types.ts",
+      "playwright-report/**",
+      "test-results/**",
     ],
+  },
+  {
+    rules: {
+      // Las imágenes vienen de Supabase con URLs firmadas que caducan: <img> es lo adecuado.
+      "@next/next/no-img-element": "off",
+    },
   },
 ];
 
