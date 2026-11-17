@@ -38,12 +38,26 @@ end $$;
 reset role;
 
 -- Usuario sin membresía (registrado sin invitación): no ve nada
-insert into auth.users (id, email, instance_id, aud, role) values (gen_random_uuid(), 'intruso@demo.test', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated');
+insert into auth.users (id, email, instance_id, aud, role, email_confirmed_at) values (gen_random_uuid(), 'intruso@demo.test', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', now());
 select pg_temp.as_user('intruso@demo.test');
 do $$ begin
   assert (select count(*) from public.clients) = 0, 'un usuario sin invitación NO debería ver clientes';
   assert (select count(*) from public.posts) = 0, 'un usuario sin invitación NO debería ver publicaciones';
   assert (select count(*) from storage.objects) = 0, 'un usuario sin invitación NO debería ver archivos';
+end $$;
+reset role;
+
+-- Nadie puede cambiar el correo de su perfil para robar una invitación
+insert into public.invitations (email, role) values ('invitada@demo.test', 'admin');
+select pg_temp.as_user('intruso@demo.test');
+do $$ begin
+  begin
+    update public.profiles set email = 'invitada@demo.test' where id = auth.uid();
+    raise exception 'NO debería poder cambiar el correo del perfil';
+  exception when insufficient_privilege then null;
+  end;
+  assert public.claim_invitation() is null, 'NO debería reclamar una invitación ajena';
+  update public.profiles set full_name = 'Nombre nuevo' where id = auth.uid();
 end $$;
 reset role;
 

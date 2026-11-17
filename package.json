@@ -12,8 +12,9 @@
     "test:e2e": "playwright test",
     "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts && prettier --write src/lib/supabase/database.types.ts",
     "test:all": "bash scripts/test-reset.sh",
-    "cron": "node -e \"fetch('http://localhost:3000/api/cron/publicar',{headers:{authorization:'Bearer '+process.env.CRON_SECRET}}).then(r=>r.json()).then(j=>console.log(j))\" --env-file=.env.local",
-    "test:meta": "tsx --conditions=react-server --env-file=.env.local scripts/test-meta.mts"
+    "cron": "node --env-file=.env.local -e \"fetch('http://localhost:3000/api/cron/publicar',{headers:{authorization:'Bearer '+process.env.CRON_SECRET}}).then(r=>r.json()).then(j=>console.log(j))\"",
+    "test:meta": "tsx --conditions=react-server --env-file=.env.local scripts/test-meta.mts",
+    "db:bundle": "node scripts/bundle-sql.mjs"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
