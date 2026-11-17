@@ -209,7 +209,7 @@ export async function getClientEditorData(clientId: string) {
   await requireMember();
   const supabase = await createClient();
   const [{ data: client }, { data: templates }, { data: hashtagGroups }] = await Promise.all([
-    supabase.from("clients").select("id, name, logo_url, color_primary, client_social_accounts(network, handle, connection)").eq("id", clientId).single(),
+    supabase.from("clients").select("id, name, logo_url, color_primary, client_social_accounts(network, handle, connection, profile_url)").eq("id", clientId).single(),
     supabase.from("templates").select("id, name, format, caption, first_comment, networks").eq("client_id", clientId).order("name"),
     supabase.from("hashtag_groups").select("id, name, hashtags").eq("client_id", clientId).order("name"),
   ]);
@@ -219,3 +219,38 @@ export async function getClientEditorData(clientId: string) {
 export type ClientEditorData = Awaited<ReturnType<typeof getClientEditorData>>;
 export type PickerMedia = Awaited<ReturnType<typeof listClientMedia>>[number];
 export type { PostStatus };
+
+// ─── Publicación manual ──────────────────────────────────────────────────────
+
+export async function markTargetPublished(postId: string, network: Network, permalink: string): Promise<Result> {
+  await assertCanEdit();
+  const link = permalink.trim();
+  if (link && !/^https?:\/\/\S+$/.test(link)) return { error: "El enlace debe empezar con https://" };
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("post_targets")
+    .update({ status: "published", published_at: new Date().toISOString(), permalink: link || null, error: null })
+    .eq("post_id", postId)
+    .eq("network", network);
+  if (error) return { error: error.message };
+  const { settlePostStatus } = await import("@/lib/publisher");
+  const { createAdminClient } = await import("@/lib/supabase/server");
+  await settlePostStatus(createAdminClient(), postId);
+  revalidatePostPaths(postId);
+  return {};
+}
+
+export async function markTargetPending(postId: string, network: Network): Promise<Result> {
+  await assertCanEdit();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("post_targets")
+    .update({ status: "pending", published_at: null, permalink: null, attempts: 0, error: null })
+    .eq("post_id", postId)
+    .eq("network", network);
+  if (error) return { error: error.message };
+  // Si estaba como Publicada o con Error, vuelve a Programada
+  await supabase.from("posts").update({ status: "scheduled", published_at: null }).eq("id", postId).in("status", ["published", "failed"]);
+  revalidatePostPaths(postId);
+  return {};
+}

@@ -1,13 +1,12 @@
 "use client";
 
-import { ExternalLink, MessageSquare, History, Send } from "lucide-react";
+import { MessageSquare, History, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { NetworkBadge } from "@/components/network-badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { NETWORK_INFO, STATUS_INFO, type Network, type PostStatus } from "@/lib/constants";
+import { STATUS_INFO, type PostStatus } from "@/lib/constants";
 import { fmt } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 import { addComment } from "../actions";
@@ -21,20 +20,17 @@ type HistoryRow = {
   created_at: string;
   profiles: { full_name: string | null } | null;
 };
-type Target = { network: Network; status: "pending" | "published" | "failed"; publish_mode: "auto" | "manual"; permalink: string | null; published_at: string | null; error: string | null };
 
 export function PostActivity({
   postId,
   canComment,
   comments,
   history,
-  targets,
 }: {
   postId: string;
   canComment: boolean;
   comments: Comment[];
   history: HistoryRow[];
-  targets: Target[];
 }) {
   const router = useRouter();
   const [body, setBody] = useState("");
@@ -81,33 +77,6 @@ export function PostActivity({
       </section>
 
       <section className="grid content-start gap-5">
-        {targets.some((t) => t.status !== "pending") && (
-          <div className="grid gap-2">
-            <h2 className="font-semibold">Estado por red</h2>
-            <ul className="grid gap-1.5 text-sm">
-              {targets.map((t) => (
-                <li key={t.network} className="flex items-center gap-2">
-                  <NetworkBadge network={t.network} size="xs" />
-                  <span className="flex-1">{NETWORK_INFO[t.network].label}</span>
-                  {t.status === "published" ? (
-                    <span className="text-success">Publicado {t.published_at ? fmt(t.published_at, "d MMM, HH:mm") : ""}</span>
-                  ) : t.status === "failed" ? (
-                    <span className="text-destructive" title={t.error ?? ""}>
-                      Error
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground">Pendiente</span>
-                  )}
-                  {t.permalink && (
-                    <a href={t.permalink} target="_blank" rel="noreferrer" aria-label="Ver publicación" className="text-muted-foreground hover:text-foreground">
-                      <ExternalLink className="size-3.5" />
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
         <div className="grid gap-2">
           <h2 className="flex items-center gap-2 font-semibold">
             <History className="size-4" /> Historial

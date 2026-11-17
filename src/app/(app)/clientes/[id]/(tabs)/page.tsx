@@ -6,11 +6,14 @@ import { POST_LIST_SELECT, PostList, type PostListItem } from "@/components/post
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NETWORK_INFO } from "@/lib/constants";
 import { getClient } from "@/lib/queries";
+import { requireMember } from "@/lib/auth";
+import { metaConfigured } from "@/lib/meta";
+import { MetaCard } from "./meta-card";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ClientSummaryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const client = await getClient(id);
+  const [client, user] = await Promise.all([getClient(id), requireMember()]);
   if (!client) notFound();
   const supabase = await createClient();
   const { data: upcoming } = await supabase
@@ -58,6 +61,12 @@ export default async function ClientSummaryPage({ params }: { params: Promise<{ 
       </div>
 
       <div className="grid content-start gap-5">
+        <MetaCard
+          clientId={client.id}
+          configured={metaConfigured()}
+          isAdmin={user.role === "admin"}
+          connected={client.client_social_accounts.filter((a) => a.connection === "auto").map((a) => (a.network === "instagram" ? "Instagram" : "Facebook"))}
+        />
         <Card>
           <CardHeader>
             <CardTitle>Contacto</CardTitle>

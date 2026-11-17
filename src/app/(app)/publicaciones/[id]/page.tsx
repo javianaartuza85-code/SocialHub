@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getClientEditorData } from "../actions";
 import { PostEditor } from "../post-editor";
 import { PostActivity } from "./post-activity";
+import { PublishPanel } from "./publish-panel";
+import { metaConfigured } from "@/lib/meta";
 
 export const metadata: Metadata = { title: "Publicación" };
 
@@ -65,7 +67,19 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           media: mediaRows.map(({ storage_path, ...m }) => ({ ...m, url: urls.get(storage_path) ?? "" })),
         }}
       />
-      <PostActivity postId={post.id} canComment={canEdit(user.role)} comments={comments ?? []} history={history ?? []} targets={post.post_targets} />
+      <PublishPanel
+        postId={post.id}
+        status={post.status}
+        scheduledAt={post.scheduled_at}
+        caption={post.caption}
+        firstComment={post.first_comment}
+        targets={post.post_targets}
+        files={mediaRows.map((m) => ({ url: urls.get(m.storage_path) ?? "", filename: m.filename }))}
+        profiles={Object.fromEntries((editorData.client?.client_social_accounts ?? []).map((a) => [a.network, a.profile_url]))}
+        editable={canEdit(user.role)}
+        metaEnabled={metaConfigured()}
+      />
+      <PostActivity postId={post.id} canComment={canEdit(user.role)} comments={comments ?? []} history={history ?? []} />
     </>
   );
 }

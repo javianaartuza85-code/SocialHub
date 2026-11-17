@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertCircle, CalendarCheck2, CalendarRange, Clock, Plus } from "lucide-react";
+import { AlertCircle, BellRing, CalendarCheck2, CalendarRange, Clock, Plus } from "lucide-react";
 import { ClientAvatar } from "@/components/client-avatar";
 import { POST_LIST_SELECT, PostList, type PostListItem } from "@/components/post-list";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ export default async function HomePage() {
   const weekEnd = startOfZonedDay(7);
   const activeIds = clients.map((c) => c.id);
 
-  const [{ data: week }, { data: review }] = await Promise.all([
+  const [{ data: week }, { data: review }, { data: dueRows }] = await Promise.all([
     supabase
       .from("posts")
       .select(`${POST_LIST_SELECT}, client_id`)
@@ -44,7 +44,17 @@ export default async function HomePage() {
       .neq("status", "idea")
       .order("scheduled_at"),
     supabase.from("posts").select(`${POST_LIST_SELECT}, client_id`).in("client_id", activeIds).eq("status", "in_review").order("scheduled_at", { nullsFirst: false }),
+    // Programadas cuya hora ya llegó y que siguen pendientes en alguna red (modo manual)
+    supabase
+      .from("posts")
+      .select(`${POST_LIST_SELECT}, client_id, pending:post_targets!inner(status)`)
+      .in("client_id", activeIds)
+      .eq("status", "scheduled")
+      .eq("pending.status", "pending")
+      .lte("scheduled_at", new Date().toISOString())
+      .order("scheduled_at"),
   ]);
+  const duePosts = (dueRows ?? []) as unknown as Post[];
   const weekPosts = (week ?? []) as unknown as Post[];
   const todayPosts = weekPosts.filter((p) => new Date(p.scheduled_at!) < tomorrow);
   const restOfWeek = weekPosts.filter((p) => new Date(p.scheduled_at!) >= tomorrow);
@@ -83,6 +93,16 @@ export default async function HomePage() {
           </Button>
         )}
       </div>
+
+      {duePosts.length > 0 && (
+        <section id="publicar-ahora" className="grid gap-3 rounded-2xl border border-warning bg-warning/5 p-4">
+          <h2 className="flex items-center gap-2 font-semibold">
+            <BellRing className="size-5 text-warning" /> Para publicar ahora ({duePosts.length})
+          </h2>
+          <p className="-mt-2 text-sm text-muted-foreground">Ya llegó su hora. Ábrelas para copiar el texto, descargar los archivos y marcarlas como publicadas.</p>
+          <PostList posts={duePosts} showClient />
+        </section>
+      )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {kpis.map((k) => (
