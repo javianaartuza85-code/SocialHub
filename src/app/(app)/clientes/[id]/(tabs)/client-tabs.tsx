@@ -4,9 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const TABS = [
+type TabDef = { slug: string; label: string; external?: (id: string) => string };
+
+const TABS: TabDef[] = [
   { slug: "", label: "Resumen" },
   { slug: "publicaciones", label: "Publicaciones" },
+  { slug: "medios", label: "Medios", external: (id) => `/medios?cliente=${id}` },
 ];
 
 export function ClientTabs({ id }: { id: string }) {
@@ -16,7 +19,7 @@ export function ClientTabs({ id }: { id: string }) {
     <nav className="-mx-4 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0">
       <div className="inline-flex min-w-full gap-1 border-b sm:min-w-0">
         {TABS.map((t) => {
-          const href = t.slug ? `${base}/${t.slug}` : base;
+          const href = t.external ? t.external(id) : t.slug ? `${base}/${t.slug}` : base;
           const active = pathname === href;
           return (
             <Link
