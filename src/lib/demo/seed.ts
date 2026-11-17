@@ -39,7 +39,7 @@ const CLIENTS: DemoClient[] = [
     name: "Café Aroma",
     industry: "Cafetería de especialidad",
     colors: ["#7c4a2d", "#e9c9a7", "#2f855a"],
-    contact: { name: "Lucía Herrera", email: "lucia@cafearoma.example", phone: "+52 55 1234 5678", website: "https://cafearoma.example" },
+    contact: { name: "Lucía Herrera", email: "lucia@cafearoma.example", phone: "+57 601 234 5678", website: "https://cafearoma.example" },
     notes: "Tono cercano y cálido. Evitar mencionar precios en los textos. Publican el menú de temporada cada mes.",
     accounts: [
       { network: "instagram", handle: "@cafearoma" },
@@ -49,7 +49,7 @@ const CLIENTS: DemoClient[] = [
     baseFollowers: { instagram: 8200, facebook: 5400, tiktok: 2100 },
     hashtagGroups: [
       { name: "Marca", hashtags: ["#CaféAroma", "#CaféDeEspecialidad", "#CoffeeLovers"] },
-      { name: "Local", hashtags: ["#CDMX", "#Roma", "#CafésCDMX", "#Desayunos"] },
+      { name: "Local", hashtags: ["#Bogotá", "#Chapinero", "#CaféBogotá", "#Desayunos"] },
     ],
     templates: [
       { name: "Producto de la semana", format: "post", caption: "☕ Producto de la semana: [nombre]\n\n[Descripción en una frase]\n\nVen a probarlo esta semana 💛", networks: ["instagram", "facebook"] },
@@ -67,7 +67,7 @@ const CLIENTS: DemoClient[] = [
       { title: "Latte de calabaza", caption: "Llegó la temporada 🍂 Nuestro latte de calabaza y especias ya está en barra.\n\n¿Con leche de avena o tradicional?", format: "post", networks: ["instagram", "facebook"], day: -18, hour: 9, images: 1 },
       { title: "Conoce al equipo", caption: "Detrás de cada taza hay manos que cuidan cada detalle. Hoy te presentamos a quienes hacen posible Café Aroma 💛", format: "carousel", networks: ["instagram", "facebook"], day: -11, hour: 12, images: 3 },
       { title: "Cómo hacemos el cold brew", caption: "18 horas de paciencia para el cold brew perfecto ❄️☕", format: "reel", networks: ["instagram", "tiktok"], day: -4, hour: 18, images: 1 },
-      { title: "Pan dulce del día", caption: "Recién salido del horno 🥐 Conchas, cuernitos y orejas hasta agotar existencias.", format: "post", networks: ["instagram", "facebook"], day: 0, hour: 10, status: "scheduled", images: 1, firstComment: "#CaféAroma #PanDulce #CDMX #Desayunos" },
+      { title: "Pan dulce del día", caption: "Recién salido del horno 🥐 Conchas, cuernitos y orejas hasta agotar existencias.", format: "post", networks: ["instagram", "facebook"], day: 0, hour: 10, status: "scheduled", images: 1, firstComment: "#CaféAroma #PanDeBono #Bogotá #Desayunos" },
       { title: "Promo 2x1 martes", caption: "Los martes son de compartir: 2x1 en bebidas calientes de 4 a 6 pm ☕☕", format: "post", networks: ["instagram", "facebook", "tiktok"], day: 2, hour: 13, status: "approved", images: 1 },
       { title: "Menú de temporada", caption: "Nuevo menú de otoño 🍂 Desliza para conocer todas las bebidas.", format: "carousel", networks: ["instagram", "facebook"], day: 4, hour: 9, status: "in_review", images: 3, clientComment: "¿Podemos poner la foto del latte de calabaza primero?" },
       { title: "Taller de métodos de filtrado", caption: "Aprende a preparar café en V60 y Chemex con nuestro barista. Cupo limitado, regístrate en el link de la bio.", format: "video", networks: ["instagram", "facebook"], day: 9, hour: 17, status: "draft" },

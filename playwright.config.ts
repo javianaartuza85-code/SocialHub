@@ -9,8 +9,8 @@ export default defineConfig({
   reporter: "list",
   use: {
     baseURL: "http://localhost:3000",
-    locale: "es-MX",
-    timezoneId: "America/Mexico_City",
+    locale: "es-CO",
+    timezoneId: "America/Bogota",
     trace: "off",
     // Opcional: ruta a un Chromium ya instalado (si no, usa el de `npx playwright install`)
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH } : {},

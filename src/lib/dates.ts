@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 /** Zona horaria de la agencia. Todas las fechas se muestran y programan en esta zona. */
-export const TZ = process.env.NEXT_PUBLIC_TIMEZONE || "America/Mexico_City";
+export const TZ = process.env.NEXT_PUBLIC_TIMEZONE || "America/Bogota";
 
 export function inTZ(date: Date | string | number) {
   return new TZDate(new Date(date).getTime(), TZ);
