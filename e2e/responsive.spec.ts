@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { login } from "./helpers";
 
-const PAGES = ["/", "/calendario", "/calendario?vista=dayGridMonth", "/calendario?vista=timeGridWeek", "/clientes", "/clientes/nuevo", "/medios", "/equipo", "/publicaciones/nueva"];
+const PAGES = ["/", "/metricas", "/ajustes", "/calendario", "/calendario?vista=dayGridMonth", "/calendario?vista=timeGridWeek", "/clientes", "/clientes/nuevo", "/medios", "/equipo", "/publicaciones/nueva"];
 
 test("ninguna pantalla tiene scroll horizontal", async ({ page }) => {
   test.setTimeout(90_000);

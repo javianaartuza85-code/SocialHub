@@ -30,6 +30,13 @@
   --chart-3: oklch(0.72 0.16 60);
   --chart-4: oklch(0.6 0.2 340);
   --chart-5: oklch(0.6 0.12 230);
+  /* Paleta categórica validada (daltonismo y contraste), en orden fijo por red */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --viz-grid: #e7e6e2;
 }
 
 .dark {
@@ -58,6 +65,12 @@
   --chart-3: oklch(0.78 0.14 70);
   --chart-4: oklch(0.7 0.17 340);
   --chart-5: oklch(0.7 0.11 230);
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --viz-grid: #2f2e2b;
 }
 
 @theme inline {

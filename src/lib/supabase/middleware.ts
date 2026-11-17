@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PUBLIC_PATHS = ["/login", "/registro", "/aprobar", "/api/cron", "/auth"];
+const PUBLIC_PATHS = ["/login", "/registro", "/aprobar", "/api/cron", "/api/meta/callback", "/auth"];
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -28,6 +28,9 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isPublic = PUBLIC_PATHS.some((p) => path === p || path.startsWith(p + "/"));
 
+  if (!user && !isPublic && path.startsWith("/api/")) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

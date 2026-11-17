@@ -318,7 +318,10 @@ export async function seedDemoData(db: DB, opts: { userId?: string } = {}) {
         const month = new Date(Date.UTC(now.getFullYear(), now.getMonth() - m, 1));
         const growth = 1 + (6 - m) * 0.035 + ((network.length * m) % 5) * 0.004;
         const followers = Math.round(base * growth);
-        const reach = Math.round(followers * (1.6 + ((m * 7) % 10) / 10));
+        // Cada red tiene su propio comportamiento (alcance y tasa de interacción)
+        const profile = { instagram: [1.8, 0.052], facebook: [1.2, 0.028], tiktok: [3.1, 0.071], linkedin: [0.9, 0.034], x: [0.7, 0.019] }[network];
+        const wave = ((m * 7 + network.length) % 10) / 20;
+        const reach = Math.round(followers * (profile[0] + wave));
         rows.push({
           client_id: clientId,
           network,
@@ -326,8 +329,8 @@ export async function seedDemoData(db: DB, opts: { userId?: string } = {}) {
           followers,
           reach,
           impressions: Math.round(reach * 1.45),
-          interactions: Math.round(reach * (0.045 + ((m * 3) % 4) / 100)),
-          posts_count: 8 + ((m * 5) % 7),
+          interactions: Math.round(reach * (profile[1] + ((m * 3) % 4) / 400)),
+          posts_count: { instagram: 10, facebook: 8, tiktok: 6, linkedin: 4, x: 12 }[network] + ((m * 5) % 4),
         });
       }
     }

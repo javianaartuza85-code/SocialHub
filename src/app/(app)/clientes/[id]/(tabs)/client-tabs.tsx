@@ -12,6 +12,7 @@ const TABS: TabDef[] = [
   { slug: "medios", label: "Medios", external: (id) => `/medios?cliente=${id}` },
   { slug: "contenido", label: "Plantillas y hashtags" },
   { slug: "aprobacion", label: "Aprobación" },
+  { slug: "metricas", label: "Métricas", external: (id) => `/metricas?cliente=${id}` },
 ];
 
 export function ClientTabs({ id }: { id: string }) {
