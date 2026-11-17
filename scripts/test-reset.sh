@@ -3,6 +3,7 @@
 set -euo pipefail
 npx supabase db reset
 npm run seed
+npx tsx --env-file=.env.local scripts/check-demo.ts
 psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 -q -f supabase/tests/rls.sql
 npm run build
 npx playwright test --trace off "$@"
