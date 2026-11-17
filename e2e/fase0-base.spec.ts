@@ -17,6 +17,7 @@ test("contraseña incorrecta muestra un error en español", async ({ page }) => 
 test("el administrador entra y ve los 3 clientes de ejemplo", async ({ page }) => {
   await login(page);
   await expect(page.getByRole("heading", { name: /Hola, Ana/ })).toBeVisible();
+  await page.goto("/clientes");
   for (const name of ["Café Aroma", "FitZone Gym", "Estudio Lumen"]) {
     await expect(page.getByText(name).first()).toBeVisible();
   }

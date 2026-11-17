@@ -42,3 +42,22 @@ export function startOfZonedDay(dayOffset = 0) {
 export function monthKey(date: Date | string) {
   return format(inTZ(date), "yyyy-MM");
 }
+
+/**
+ * FullCalendar trabaja en "UTC" y nosotros le damos la hora de pared de la agencia:
+ * "2026-11-20T12:00:00" significa las 12:00 en Colombia. Estas dos funciones convierten.
+ */
+export function toWallClock(iso: string) {
+  return format(inTZ(iso), "yyyy-MM-dd'T'HH:mm:ss");
+}
+
+export function fromWallClockDate(d: Date) {
+  // d está en "coordenadas UTC" con la hora de pared de la agencia
+  const p = (n: number) => String(n).padStart(2, "0");
+  const wall = `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}T${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`;
+  return fromInputValue(wall);
+}
+
+export function wallClockNow() {
+  return toWallClock(new Date().toISOString());
+}
