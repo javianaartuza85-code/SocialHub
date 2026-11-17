@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn, signUp, type AuthState } from "./actions";
 
-export function AuthForm({ mode, next }: { mode: "login" | "registro"; next?: string }) {
+export function AuthForm({ mode, next, defaultEmail }: { mode: "login" | "registro"; next?: string; defaultEmail?: string }) {
   const [state, action, pending] = useActionState<AuthState, FormData>(mode === "login" ? signIn : signUp, undefined);
   return (
     <form action={action} className="grid gap-4">
@@ -20,7 +20,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "registro"; next?: st
       )}
       <div className="grid gap-2">
         <Label htmlFor="email">Correo electrónico</Label>
-        <Input id="email" name="email" type="email" required autoComplete="email" />
+        <Input id="email" name="email" type="email" required autoComplete="email" defaultValue={defaultEmail} />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="password">Contraseña</Label>

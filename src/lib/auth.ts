@@ -22,11 +22,17 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     supabase.from("profiles").select("full_name, email").eq("id", user.id).maybeSingle(),
     supabase.from("members").select("role").eq("user_id", user.id).maybeSingle(),
   ]);
+  let role = member?.role ?? null;
+  if (!role) {
+    // ¿Lo invitaron después de registrarse? Reclama la invitación pendiente.
+    const { data } = await supabase.rpc("claim_invitation");
+    role = data ?? null;
+  }
   return {
     id: user.id,
     email: profile?.email ?? user.email ?? "",
     fullName: profile?.full_name ?? user.email ?? "",
-    role: member?.role ?? null,
+    role,
   };
 });
 

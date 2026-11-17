@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import type { Network, PostFormat, PostStatus } from "@/lib/constants";
+import { zonedAt } from "@/lib/dates";
 
 type DB = SupabaseClient<Database>;
 
@@ -163,10 +164,7 @@ function svgPlaceholder(label: string, colors: [string, string, string], index: 
 }
 
 function at(day: number, hour: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + day);
-  d.setHours(hour, 0, 0, 0);
-  return d;
+  return zonedAt(day, hour);
 }
 
 function statusFor(p: DemoPost): PostStatus {
@@ -205,7 +203,7 @@ export async function seedDemoData(db: DB, opts: { userId?: string } = {}) {
       .map((w) => w[0])
       .join("")
       .slice(0, 2);
-    const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" rx="56" fill="${c.colors[0]}"/><text x="128" y="160" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="104" font-weight="700" fill="${c.colors[1]}">${initials}</text></svg>`;
+    const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" rx="56" fill="${c.colors[0]}"/><text x="128" y="160" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="104" font-weight="700" fill="#ffffff">${initials}</text></svg>`;
     const logoPath = `${clientId}/logo.svg`;
     await db.storage.from("logos").upload(logoPath, new Blob([logoSvg], { type: "image/svg+xml" }), { upsert: true, contentType: "image/svg+xml" });
     const logoUrl = db.storage.from("logos").getPublicUrl(logoPath).data.publicUrl;

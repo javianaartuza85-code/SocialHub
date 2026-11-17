@@ -843,6 +843,10 @@ export type Database = {
     };
     Functions: {
       can_edit: { Args: Record<PropertyKey, never>; Returns: boolean };
+      claim_invitation: {
+        Args: Record<PropertyKey, never>;
+        Returns: Database["public"]["Enums"]["user_role"];
+      };
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_member: { Args: Record<PropertyKey, never>; Returns: boolean };
       my_role: {
